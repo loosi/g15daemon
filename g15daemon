@@ -1,39 +1,31 @@
 #!/bin/sh
 #
 # g15daemon:   Logitech G15 Display Device Daemon.
-#
-# chkconfig:   2345 82 82
 # description: Logitech G15 Displaytreiber Daemon
-# processname: g15deamon
+#originally from http://www.g15-applets.de/g15daemon-im-systemstart-einbinden-unter-fc7-t3549.html
+#I modified it to fit into debian init script conventions
 PIDFILE="/var/run/g15daemon.pid"
-#
-
-# Source function library.
-#. /etc/init.d/functions
-
-
 RETVAL=3
 
 start()
 {
-        echo -n "Starting g15daemon: "
-        /usr/sbin/g15daemon -s
+	echo -n "Starting g15daemon: "
+  /usr/sbin/g15daemon -s
 	PID=`pidof -o %PPID -x g15daemon` > ${PIDFILE} || failure
-
-   RETVAL=$?
-   echo
+	RETVAL=$?
+  echo
 }
 
 stop()
 {
-   echo -n "Shutting down g15daemon: "
-   #if[!/usr/sbin/g15daemon -K]
-   #then #maybe i will use it when daemon wont quit on first attempt
-   #	kill -9 $(<"$PIDFILE")
-   #fi
-   rm -f $PIDFILE || failure
-   RETVAL=$?
-   echo
+	echo -n "Shutting down g15daemon: "
+	#if[!/usr/sbin/g15daemon -K] #maybe use it when daemon wont quit on first attempt
+  #then 
+  #	kill -9 $(<"$PIDFILE")
+  #fi
+  rm -f $PIDFILE || failure
+  RETVAL=$?
+  echo
 }
 
 [ -f /usr/sbin/g15daemon ] || exit 0
@@ -50,16 +42,13 @@ case "$1" in
    stop
    start
    ;;
-  condrestart)
-   [ -e "$lockfile" ] && (stop; start)
-   ;;
   status)
      status g15daemon
      echo
      /usr/sbin/g15daemon --version
    ;;
   *)
-        echo $"Usage: $0 {start|stop|restart|reload|condrestart}"
+        echo $"Usage: $0 {start|stop|restart|reload|}"
         exit 1
 esac
 
